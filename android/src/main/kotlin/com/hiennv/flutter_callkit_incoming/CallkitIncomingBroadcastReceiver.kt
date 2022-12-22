@@ -117,10 +117,14 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         when (action) {
             ACTION_CALL_INCOMING -> {
                 try {
-                    val data2 = data.toData()
-                    val extra = data2["extra"] as Map<String,Any>
-                    sessionId= extra["sessionid"] as String
-                    token = extra["token"] as String
+
+                    val callType = Data.fromBundle(data).extra["callType"]
+                    if(callType == "video") {
+                        val data2 = data.toData()
+                        val extra = data2["extra"] as Map<String, Any>
+                        sessionId = extra["sessionid"] as String
+                        token = extra["token"] as String
+                    }
 
                     callkitNotificationManager.showIncomingNotification(data)
                     sendEventFlutter(ACTION_CALL_INCOMING, data)
@@ -156,37 +160,41 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_DECLINE -> {
                 try {
-                    sendEventFlutter(ACTION_CALL_DECLINE, data)
-                    val url =
-                        URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
-                    // add parameter
-                    val mediaType = "application/json; charset=utf-8".toMediaType()
-                    val jsonObject = JSONObject()
-                    try {
-                        jsonObject.put("eventtype", "reject")
-                        jsonObject.put("sessionid", sessionId)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
+                    val callType = Data.fromBundle(data).extra["callType"]
+                    if (callType == "video") {
+                        val url =
+                            URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
+                        // add parameter
+                        val mediaType = "application/json; charset=utf-8".toMediaType()
+                        val jsonObject = JSONObject()
+                        try {
+                            jsonObject.put("eventtype", "reject")
+                            jsonObject.put("sessionid", sessionId)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                        val body = jsonObject.toString().toRequestBody(mediaType)
+                        // creating request
+                        var request = Request.Builder().url(url)
+                            .post(body)
+                            .addHeader("Content-Type", "application/json")
+                            .build()
+
+                        var client = OkHttpClient();
+                        client.newCall(request).enqueue(object : Callback {
+                            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                                println("fail here")
+
+                            }
+
+                            override fun onResponse(call: okhttp3.Call, response: Response) {
+                                println(response.body?.string())
+                            }
+                        })
+                        println("marc here")
+                    } else {
+                        sendEventFlutter(ACTION_CALL_DECLINE, data)
                     }
-                    val body = jsonObject.toString().toRequestBody(mediaType)
-                    // creating request
-                    var request = Request.Builder().url(url)
-                        .post(body)
-                        .addHeader("Content-Type", "application/json")
-                        .build()
-
-                    var client = OkHttpClient();
-                    client.newCall(request).enqueue(object : Callback {
-                        override fun onFailure(call: okhttp3.Call, e: IOException) {
-                            println("fail here")
-
-                        }
-
-                        override fun onResponse(call: okhttp3.Call, response: Response) {
-                            println(response.body?.string())
-                        }
-                    })
-                    println("marc here")
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
                     removeCall(context, Data.fromBundle(data))
