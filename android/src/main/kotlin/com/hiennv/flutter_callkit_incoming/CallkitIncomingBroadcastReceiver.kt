@@ -161,6 +161,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             ACTION_CALL_DECLINE -> {
                 try {
                     val callType = Data.fromBundle(data).extra["callType"]
+                    val number = Data.fromBundle(data).handle
                     if (callType == "video") {
                         val url =
                             URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
@@ -192,6 +193,36 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                             }
                         })
                         println("marc here")
+                    } else if (callType == "voice") {
+                        val url =
+                            URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendvoicecallevent?")
+                        // add parameter
+                        val mediaType = "application/json; charset=utf-8".toMediaType()
+                        val jsonObject = JSONObject()
+                        try {
+                            jsonObject.put("eventtype", "reject")
+                            jsonObject.put("number", number)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                        val body = jsonObject.toString().toRequestBody(mediaType)
+                        // creating request
+                        var request = Request.Builder().url(url)
+                            .post(body)
+                            .addHeader("Content-Type", "application/json")
+                            .build()
+
+                        var client = OkHttpClient();
+                        client.newCall(request).enqueue(object : Callback {
+                            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                                println("fail here")
+
+                            }
+
+                            override fun onResponse(call: okhttp3.Call, response: Response) {
+                                println(response.body?.string())
+                            }
+                        })
                     } else {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
                     }
