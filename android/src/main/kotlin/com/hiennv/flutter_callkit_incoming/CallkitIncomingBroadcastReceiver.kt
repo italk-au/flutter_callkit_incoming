@@ -13,6 +13,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
+import java.io.File
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
@@ -150,11 +151,10 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_ACCEPT -> {
                 try {
-                    final directory = await getApplicationDocumentsDirectory();
+                    val appDirectory = context.filesDir
+                    val file = File(appDirectory, "notifcheckeraccept.txt")
+                    file.writeText("notifcheckeraccept")
 
-                    final path = directory.path;
-                    final file = File('$path/notifcheckeraccept.txt');
-                    file.writeAsString('notifcheckeraccept');
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
@@ -165,11 +165,10 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_DECLINE -> {
                 try {
-                    final directory = await getApplicationDocumentsDirectory();
+                    val appDirectory = context.filesDir
+                    val file = File(appDirectory, "notifcheckerdecline.txt")
+                    file.writeText("notifcheckerdecline")
 
-                    final path = directory.path;
-                    final file = File('$path/notifcheckerdecline.txt');
-                    file.writeAsString('notifcheckerdecline');
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
                     if (callType == "video") {
