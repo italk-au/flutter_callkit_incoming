@@ -150,6 +150,11 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_ACCEPT -> {
                 try {
+                    final directory = await getApplicationDocumentsDirectory();
+
+                    final path = directory.path;
+                    final file = File('$path/notifcheckeraccept.txt');
+                    file.writeAsString('notifcheckeraccept');
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
@@ -160,6 +165,11 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_DECLINE -> {
                 try {
+                    final directory = await getApplicationDocumentsDirectory();
+
+                    final path = directory.path;
+                    final file = File('$path/notifcheckerdecline.txt');
+                    file.writeAsString('notifcheckerdecline');
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
                     if (callType == "video") {
