@@ -151,9 +151,13 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_ACCEPT -> {
                 try {
-                    val appDirectory = context.filesDir
-                    val file = File(appDirectory, "notifcheckeraccept.txt")
-                    file.writeText("notifcheckeraccept")
+                    val callType = Data.fromBundle(data).extra["callType"]
+
+                    if (callType == "voice") {
+                        val appDirectory = context.filesDir
+                        val file = File(appDirectory, "notifcheckeraccept.txt")
+                        file.writeText("notifcheckeraccept")
+                    }
 
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
@@ -165,10 +169,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_DECLINE -> {
                 try {
-                    val appDirectory = context.filesDir
-                    val file = File(appDirectory, "notifcheckerdecline.txt")
-                    file.writeText("notifcheckerdecline")
-
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
                     if (callType == "video") {
@@ -203,6 +203,9 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         })
                         println("marc here")
                     } else if (callType == "voice") {
+                        val appDirectory = context.filesDir
+                        val file = File(appDirectory, "notifcheckerdecline.txt")
+                        file.writeText("notifcheckerdecline")
                         val url =
                             URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendvoicecallevent?")
                         // add parameter
