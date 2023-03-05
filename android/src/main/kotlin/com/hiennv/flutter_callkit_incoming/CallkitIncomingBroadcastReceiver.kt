@@ -112,7 +112,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val callkitNotificationManager = CallkitNotificationManager(context)
         val action = intent.action ?: return
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
-        val dataFromEndCall = intent.extras?.getBundle("isfromEndAllCalls") ? return : "true"
+        if(intent.extras?.getBundle("isfromEndAllCalls")) 
+            return
 
         Cache.updateLatestEvent(action, data.toData())
 
