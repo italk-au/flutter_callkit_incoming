@@ -178,7 +178,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                             context?.sendBroadcast(
                                 CallkitIncomingBroadcastReceiver.getIntentDecline(
                                     requireNotNull(context),
-                                    it.toBundle()
+                                    Bundle()
                                 )
                             )
                         }
