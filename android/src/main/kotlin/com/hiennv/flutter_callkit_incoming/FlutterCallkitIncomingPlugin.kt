@@ -176,12 +176,12 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                                 )
                             )
                         }else {
-                            val callData = it.toBundle()
-                            callData.putString("isfromEndAllCalls", "true")
+                            // val callData = it.toBundle()
+                            // callData.putString("isfromEndAllCalls", "true")
                             context?.sendBroadcast(
                                 CallkitIncomingBroadcastReceiver.getIntentDecline(
                                     requireNotNull(context),
-                                    callData
+                                    it.toBundle()
                                 )
                             )
                         }
