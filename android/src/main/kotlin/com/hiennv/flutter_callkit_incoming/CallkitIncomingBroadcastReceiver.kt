@@ -174,7 +174,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
-                    if (callType == "video") {
+                    if (callType == "video" || callType == "voice_only_video") {
                         val url =
                             URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
                         // add parameter
