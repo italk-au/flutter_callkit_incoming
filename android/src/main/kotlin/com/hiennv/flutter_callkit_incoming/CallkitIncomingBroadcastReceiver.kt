@@ -175,11 +175,14 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
                     if (callType == "video" || callType == "voice_only_video") {
+                        println("sendcallevent api AAA")
                         val url =
                             URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
                         // add parameter
                         val mediaType = "application/json; charset=utf-8".toMediaType()
                         val jsonObject = JSONObject()
+                        println("sendcallevent api BBBB")
+                        println("sendcallevent api CCCC $sessionId")
                         try {
                             jsonObject.put("eventtype", "reject")
                             jsonObject.put("sessionid", sessionId)
@@ -187,23 +190,26 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                             e.printStackTrace()
                         }
                         val body = jsonObject.toString().toRequestBody(mediaType)
+                        println("sendcallevent api DDDD $body")
                         // creating request
                         var request = Request.Builder().url(url)
                             .post(body)
                             .addHeader("Content-Type", "application/json")
                             .build()
-
+                        println("sendcallevent api EEEE")
                         var client = OkHttpClient();
                         client.newCall(request).enqueue(object : Callback {
                             override fun onFailure(call: okhttp3.Call, e: IOException) {
                                 println("fail here")
-
+                                println("sendcallevent api FFFF")
                             }
 
                             override fun onResponse(call: okhttp3.Call, response: Response) {
                                 println(response.body?.string())
+                                println("sendcallevent api GGGG")
                             }
                         })
+                        println("sendcallevent api FFFF")
                         println("marc here")
                     } else if (callType == "voice") {
                         val appDirectory = context.filesDir
