@@ -123,7 +123,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
 
                     val callType = Data.fromBundle(data).extra["callType"]
-                    if(callType == "video") {
+                    if(callType == "video" || callType == "voice_only_video") {
                         val data2 = data.toData()
                         val extra = data2["extra"] as Map<String, Any>
                         sessionId = extra["sessionid"] as String
@@ -209,7 +209,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                 println("sendcallevent api GGGG")
                             }
                         })
-                        println("sendcallevent api FFFF")
+                        println("sendcallevent api HHHH")
                         println("marc here")
                     } else if (callType == "voice") {
                         val appDirectory = context.filesDir
