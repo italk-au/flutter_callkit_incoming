@@ -117,6 +117,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         //     return
 
         Cache.updateLatestEvent(action, data.toData())
+        val baseUrl = Data.fromBundle(data).extra["baseurl"]
+        val subPath = Data.fromBundle(data).extra["subpath"]
 
         when (action) {
             ACTION_CALL_INCOMING -> {
@@ -172,12 +174,15 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_DECLINE -> {
                 try {
+
                     val callType = Data.fromBundle(data).extra["callType"]
                     val number = Data.fromBundle(data).handle
                     if (callType == "video" || callType == "voice_only_video") {
                         println("sendcallevent api AAA")
+                        println("send ${baseUrl}/${subPath}")
+
                         val url =
-                            URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendcallevent?")
+                            URL("${baseUrl}/${subPath}/sendcallevent?")
                         // add parameter
                         val mediaType = "application/json; charset=utf-8".toMediaType()
                         val jsonObject = JSONObject()
@@ -216,7 +221,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         val file = File(appDirectory, "notifcheckerdecline.txt")
                         file.writeText("notifcheckerdecline")
                         val url =
-                            URL("https://r0u8gr0ge5.execute-api.ap-southeast-2.amazonaws.com/env-dev/sendvoicecallevent?")
+                                URL("${baseUrl}/${subPath}/sendcallevent?")
                         // // add parameter
                         val mediaType = "application/json; charset=utf-8".toMediaType()
                         val jsonObject = JSONObject()
