@@ -179,10 +179,10 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val number = Data.fromBundle(data).handle
                     if (callType == "video" || callType == "voice_only_video") {
                         println("sendcallevent api AAA")
-                        println("send ${baseUrl}/${subPath}")
+                        println("send ${baseUrl}${subPath}")
 
                         val url =
-                            URL("${baseUrl}/${subPath}/sendcallevent?")
+                            URL("${baseUrl}${subPath}/sendcallevent?")
                         // add parameter
                         val mediaType = "application/json; charset=utf-8".toMediaType()
                         val jsonObject = JSONObject()
@@ -221,7 +221,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         val file = File(appDirectory, "notifcheckerdecline.txt")
                         file.writeText("notifcheckerdecline")
                         val url =
-                                URL("${baseUrl}/${subPath}/sendcallevent?")
+                                URL("${baseUrl}${subPath}/sendcallevent?")
                         // // add parameter
                         val mediaType = "application/json; charset=utf-8".toMediaType()
                         val jsonObject = JSONObject()
