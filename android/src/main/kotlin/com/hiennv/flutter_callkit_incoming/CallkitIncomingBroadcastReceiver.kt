@@ -119,6 +119,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         Cache.updateLatestEvent(action, data.toData())
         val baseUrl = Data.fromBundle(data).extra["baseurl"]
         val subPath = Data.fromBundle(data).extra["subpath"]
+        var apiKey = Data.fromBundle(data).extra["apiKey"]
 
         when (action) {
             ACTION_CALL_INCOMING -> {
@@ -179,7 +180,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val number = Data.fromBundle(data).handle
                     if (callType == "video" || callType == "voice_only_video") {
                         println("sendcallevent api AAA")
-                        println("send ${baseUrl}${subPath}")
+                        println("send ${baseUrl}${subPath}${apiKey}")
 
                         val url =
                             URL("${baseUrl}${subPath}/sendcallevent?")
@@ -200,6 +201,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         var request = Request.Builder().url(url)
                             .post(body)
                             .addHeader("Content-Type", "application/json")
+                            .addHeader("x-api-key", apiKey)
                             .build()
                         println("sendcallevent api EEEE")
                         var client = OkHttpClient();
@@ -236,6 +238,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         var request = Request.Builder().url(url)
                             .post(body)
                             .addHeader("Content-Type", "application/json")
+                            .addHeader("x-api-key", apiKey)
                             .build()
 
                         var client = OkHttpClient();
