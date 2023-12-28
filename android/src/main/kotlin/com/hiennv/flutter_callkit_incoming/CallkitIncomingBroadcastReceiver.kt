@@ -201,7 +201,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         var request = Request.Builder().url(url)
                             .post(body)
                             .addHeader("Content-Type", "application/json")
-                            .addHeader("x-api-key", apiKey)
+                            .addHeader("x-api-key", apiKey.toString())
                             .build()
                         println("sendcallevent api EEEE")
                         var client = OkHttpClient();
@@ -238,7 +238,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         var request = Request.Builder().url(url)
                             .post(body)
                             .addHeader("Content-Type", "application/json")
-                            .addHeader("x-api-key", apiKey)
+                            .addHeader("x-api-key", apiKey.toString())
                             .build()
 
                         var client = OkHttpClient();
