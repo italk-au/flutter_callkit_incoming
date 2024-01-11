@@ -16,6 +16,7 @@ import java.net.URL
 import java.io.File
 import com.vonage.voice.api.VoiceClient
 import com.vonage.android_core.VGClientConfig
+import com.vonage.voice.api.VoiceInvite
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
@@ -116,6 +117,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
         var client = VoiceClient(context)
         client?.setConfig(VGClientConfig())
+        var callInvite: VoiceInvite? = null
         // val endcallStatus = intent.getExtras()?.containsKey("isfromEndAllCalls") 
         // if (endcallStatus != null && endcallStatus)    
         //     return
