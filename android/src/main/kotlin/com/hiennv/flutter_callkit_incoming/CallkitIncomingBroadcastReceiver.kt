@@ -17,6 +17,7 @@ import java.io.File
 import com.vonage.voice.api.VoiceClient
 import com.vonage.android_core.VGClientConfig
 import com.vonage.voice.api.VoiceInvite
+import android.util.Log
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
@@ -167,7 +168,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
                     val callType = Data.fromBundle(data).extra["callType"]
 
-                    if (callType == "voice") {
+                    if (callType == "phonetoapp") {
                         val appDirectory = context.filesDir
                         val file = File(appDirectory, "notifcheckeraccept.txt")
                         file.writeText("notifcheckeraccept")
@@ -263,9 +264,11 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
 
-                        println("Zapme remote message ${remoteMessage}")
+                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
                         println("token $token")
                         callInvite = client?.processPushCallInvite(remoteMessage, token)
+                        Log.v("Zapme", "zapme client $client")
+                        Log.v("Zapme", "zapme callInvite $callInvite")
                         if (callInvite != null) {
                             callInvite?.reject {
                                 err ->
@@ -280,6 +283,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                     }
                                 }
                             }
+                        } else {
+                            Log.v("Zapme", "zapme callInvite null $callInvite")
                         }
 
                     }
