@@ -263,19 +263,19 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
 
-                        Log.v("Zapme", "remote message $remoteMessage")
-                        Log.v("Zapme", "token $token")
-                        callInvite = client?.processPushCallInvite(remoteMessage, token)
+                        println("Zapme", "remote message $remoteMessage")
+                        println("Zapme", "token $token")
+                        callInvite = client?.processPushCallInvite(remoteMessage)
                         if (callInvite != null) {
                             callInvite?.reject {
                                 err ->
                                 when {
                                     err != null -> {
-                                        Log.v("Zapme Callkit", "error reject call $err")
+                                        println("Zapme Callkit", "error reject call $err")
                                         updateCallFlow(CallAction.ERROR_REJECT_CALL)
                                     }
                                     else -> {
-                                        Log.v("Zapme Callkit", "success reject")
+                                        println("Zapme Callkit", "success reject")
                                         resetOnGoingCall()
                                         updateCallFlow(CallAction.SUCCESS_REJECT_CALL)
                                     }
