@@ -112,6 +112,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val callkitNotificationManager = CallkitNotificationManager(context)
         val action = intent.action ?: return
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
+        var client = VoiceClient(context)
+        client?.setConfig(VGClientConfig())
         // val endcallStatus = intent.getExtras()?.containsKey("isfromEndAllCalls") 
         // if (endcallStatus != null && endcallStatus)    
         //     return
@@ -120,6 +122,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val baseUrl = Data.fromBundle(data).extra["baseurl"]
         val subPath = Data.fromBundle(data).extra["subpath"]
         var apiKey = Data.fromBundle(data).extra["apiKey"]
+        var remoteMessage = Data.fromBundle(data).extra["remoteMessage"] as String
+        var token = Data.fromBundle(data).extra["token"] as String
 
         when (action) {
             ACTION_CALL_INCOMING -> {
@@ -252,7 +256,31 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                 println(response.body?.string())
                             }
                         })
-                    } else {
+                    } else if (callType == "phonetoapp") {
+                        sendEventFlutter(ACTION_CALL_DECLINE, data)
+
+                        Log.v("Zapme", "remote message $remoteMessage")
+                        Log.v("Zapme", "token $token")
+                        callInvite = client?.processPushCallInvite(remoteMessage, token)
+                        if (callInvite != null) {
+                            callInvite?.reject {
+                                err ->
+                                when {
+                                    err != null -> {
+                                        Log.v("Zapme Callkit", "error reject call $err")
+                                        updateCallFlow(CallAction.ERROR_REJECT_CALL)
+                                    }
+                                    else -> {
+                                        Log.v("Zapme Callkit", "success reject")
+                                        resetOnGoingCall()
+                                        updateCallFlow(CallAction.SUCCESS_REJECT_CALL)
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    else {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
                     }
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
