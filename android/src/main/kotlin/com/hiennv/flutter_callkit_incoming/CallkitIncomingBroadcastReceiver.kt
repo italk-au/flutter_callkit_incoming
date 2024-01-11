@@ -14,6 +14,8 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
 import java.io.File
+import com.vonage.voice.api.VoiceClient
+import com.vonage.android_core.VGClientConfig
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
