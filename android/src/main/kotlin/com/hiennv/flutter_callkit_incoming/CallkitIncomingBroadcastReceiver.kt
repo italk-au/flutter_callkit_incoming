@@ -266,9 +266,12 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
                         Log.v("Zapme","Zapme remote message ${remoteMessage}")
                         println("token $token")
+                        var remoteData = remoteMessage?.data.toString()
+                        Log.v("Zapme","Zapme remote data ${remoteData}")
                         
                         try {
-                            callInvite = client?.processPushCallInvite(remoteMessage, token)
+                            callInvite = client?.processPushCallInvite(remoteMessage?.data.toString(), token)
+                            Log.v("Zapme", "processPushCallInvite called successfully")
                         } catch (error: Exception) {
                             error.printStackTrace()
                             Log.v("Zapme", "processPushCallInvite error $error")
