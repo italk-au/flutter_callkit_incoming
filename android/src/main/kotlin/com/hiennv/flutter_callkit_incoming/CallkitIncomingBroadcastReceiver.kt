@@ -116,7 +116,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val callkitNotificationManager = CallkitNotificationManager(context)
         val action = intent.action ?: return
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
-        var client = VoiceClient(context)
+        val initConfig = VGClientInitConfig(LoggingLevel.Debug)
+        var client = VoiceClient(context, initConfig)
         client?.setConfig(VGClientConfig())
         var callInvite: VoiceInvite? = null
         // val endcallStatus = intent.getExtras()?.containsKey("isfromEndAllCalls") 
@@ -270,7 +271,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         Log.v("Zapme","Zapme remote data ${remoteData}")
                         
                         try {
-                            callInvite = client?.processPushCallInvite(remoteMessage?.data.toString(), token)
+                            callInvite = client?.processPushCallInvite(remoteMessage, token)
                             Log.v("Zapme", "processPushCallInvite called successfully")
                         } catch (error: Exception) {
                             error.printStackTrace()
