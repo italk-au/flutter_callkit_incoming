@@ -17,6 +17,7 @@ import java.io.File
 import com.vonage.voice.api.VoiceClient
 import com.vonage.android_core.VGClientConfig
 import com.vonage.android_core.VGClientInitConfig
+import com.vonage.clientcore.core.api.LoggingLevel
 import com.vonage.voice.api.VoiceInvite
 import android.util.Log
 
