@@ -15,8 +15,9 @@ import java.io.IOException
 import java.net.URL
 import java.io.File
 import com.vonage.voice.api.VoiceClient
-import com.vonage.android_core.*
+import com.vonage.android_core.VGClientConfig
 import com.vonage.clientcore.core.api.LoggingLevel
+import com.vonage.clientcore.core.api.setDefaultLoggingLevel
 import com.vonage.voice.api.VoiceInvite
 import android.util.Log
 
@@ -117,8 +118,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         val callkitNotificationManager = CallkitNotificationManager(context)
         val action = intent.action ?: return
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
-        val initConfig = VGClientInitConfig(LoggingLevel.Debug)
-        var client = VoiceClient(context, initConfig)
+        setDefaultLoggingLevel(LoggingLevel.Verbose)
+        var client = VoiceClient(context)
         client?.setConfig(VGClientConfig())
         var callInvite: VoiceInvite? = null
         // val endcallStatus = intent.getExtras()?.containsKey("isfromEndAllCalls") 
