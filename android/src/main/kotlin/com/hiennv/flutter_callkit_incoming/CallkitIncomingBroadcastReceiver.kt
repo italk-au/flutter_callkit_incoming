@@ -133,6 +133,21 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         var remoteMessage = Data.fromBundle(data).extra["remoteMessage"] as String
         var token = Data.fromBundle(data).extra["token"] as String
 
+                client?.createSession(token) { err, sessionId ->
+                    run {
+                        Log.v("loginUser", "callback start >>>>>>>>>>>>>")
+                        when {
+                            err != null -> {
+                                Log.v("loginUser", "cant create token: $err")
+                            } 
+                            else -> {
+                                Log.v("loginUser", "success loginuser")
+                                
+                            }
+                        }
+                    }
+                }
+
         when (action) {
             ACTION_CALL_INCOMING -> {
                 try {
