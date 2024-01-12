@@ -267,8 +267,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
                         Log.v("Zapme","Zapme remote message ${remoteMessage}")
                         println("token $token")
-                        var remoteData = remoteMessage?.data.toString()
-                        Log.v("Zapme","Zapme remote data ${remoteData}")
                         
                         try {
                             callInvite = client?.processPushCallInvite(remoteMessage, token)
