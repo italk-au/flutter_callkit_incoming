@@ -133,21 +133,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         var remoteMessage = Data.fromBundle(data).extra["remoteMessage"] as String
         var token = Data.fromBundle(data).extra["token"] as String
 
-                client?.createSession(token) { err, sessionId ->
-                    run {
-                        Log.v("loginUser", "callback start >>>>>>>>>>>>>")
-                        when {
-                            err != null -> {
-                                Log.v("loginUser", "cant create token: $err")
-                            } 
-                            else -> {
-                                Log.v("loginUser", "success loginuser")
-                                
-                            }
-                        }
-                    }
-                }
-
         when (action) {
             ACTION_CALL_INCOMING -> {
                 try {
@@ -282,35 +267,48 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
 
-                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
-                        println("token $token")
-                        
-                        try {
-                            callInvite = client?.processPushCallInvite(remoteMessage, token)
-                            Log.v("Zapme", "processPushCallInvite called successfully")
-                        } catch (error: Exception) {
-                            error.printStackTrace()
-                            Log.v("Zapme", "processPushCallInvite error $error")
-                        }
-                                
-                        Log.v("Zapme", "zapme client $client")
-                        Log.v("Zapme", "zapme callInvite $callInvite")
-                        if (callInvite != null) {
-                            callInvite?.reject {
-                                err ->
+                        client?.createSession(token) { err, sessionId ->
+                            run {
+                                Log.v("loginUser", "callback start >>>>>>>>>>>>>")
                                 when {
                                     err != null -> {
-                                        println("Zapme error reject call $err")
-
-                                    }
+                                        Log.v("loginUser", "cant create token: $err")
+                                    } 
                                     else -> {
-                                        println("Zapme success reject")
+                                        Log.v("loginUser", "success loginuser")
+                                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
+                                        println("token $token")
+                                        
+                                        try {
+                                            callInvite = client?.processPushCallInvite(remoteMessage, token)
+                                            Log.v("Zapme", "processPushCallInvite called successfully")
+                                        } catch (error: Exception) {
+                                            error.printStackTrace()
+                                            Log.v("Zapme", "processPushCallInvite error $error")
+                                        }
+                                                
+                                        Log.v("Zapme", "zapme client $client")
+                                        Log.v("Zapme", "zapme callInvite $callInvite")
+                                        if (callInvite != null) {
+                                            callInvite?.reject {
+                                                err ->
+                                                when {
+                                                    err != null -> {
+                                                        println("Zapme error reject call $err")
 
+                                                    }
+                                                    else -> {
+                                                        println("Zapme success reject")
+
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            Log.v("Zapme", "zapme callInvite null $callInvite")
+                                        }
                                     }
                                 }
                             }
-                        } else {
-                            Log.v("Zapme", "zapme callInvite null $callInvite")
                         }
 
                     }
