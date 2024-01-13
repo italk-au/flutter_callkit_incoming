@@ -269,13 +269,22 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
                         client?.createSession(token) { err, sessionId ->
                             run {
-                                Log.v("loginUser", "callback start >>>>>>>>>>>>>")
+                                Log.v("Zapme loginUser", "callback start >>>>>>>>>>>>>")
                                 when {
                                     err != null -> {
-                                        Log.v("loginUser", "cant create token: $err")
+                                        Log.v("Zapme loginUser", "cant create token: $err")
                                     } 
                                     else -> {
-                                        Log.v("loginUser", "success loginuser")
+                                        Log.v("Zapme loginUser", "success loginuser")
+                                    
+                                    client?.setCallInviteListener { _, invite ->
+                                        run {
+                                            callInvite = invite
+                                            Log.v("Zapme", "CALL NOTIFYING Invite $invite")
+                                            Log.v("Zapme", "CALL NOTIFYING")
+                                        }
+                                    }
+
                                         Log.v("Zapme","Zapme remote message ${remoteMessage}")
                                         println("token $token")
                                         
