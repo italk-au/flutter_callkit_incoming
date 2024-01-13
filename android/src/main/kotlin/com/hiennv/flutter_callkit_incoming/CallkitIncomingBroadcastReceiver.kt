@@ -271,6 +271,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
                         Log.v("Zapme","ZAPME REJECT: Zapme remote message ${remoteMessage}")
 
+                        callInvite = client?.processPushCallInvite(dataString, tokentoken)
 
                         client?.createSession(token) { err, sessionId ->
                             run {
@@ -293,8 +294,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                                 
                                                 Log.v("Zapme", "ZAPME REJECT: zapme client $client")
                                                 Log.v("Zapme", "ZAPME REJECT: zapme callInvite $callInvite")
-                                                if (invite != null) {
-                                                    invite?.reject {
+                                                if (callInvite != null) {
+                                                    callInvite?.reject {
                                                         err ->
                                                             when {
                                                                 err != null -> {
