@@ -281,7 +281,25 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                         run {
                                             callInvite = invite
                                             Log.v("Zapme", "CALL NOTIFYING Invite $invite")
+                                            Log.v("Zapme", "CALL NOTIFYING callInvite $callInvite")
                                             Log.v("Zapme", "CALL NOTIFYING")
+                                            if (callInvite != null) {
+                                                callInvite?.reject {
+                                                    err ->
+                                                    when {
+                                                        err != null -> {
+                                                            println("CALL NOTIFYING Zapme error reject call $err")
+
+                                                        }
+                                                        else -> {
+                                                            println("CALL NOTIFYING Zapme success reject")
+
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                Log.v("Zapme", "CALL NOTIFYING zapme callInvite null $callInvite")
+                                            }
                                         }
                                     }
 
