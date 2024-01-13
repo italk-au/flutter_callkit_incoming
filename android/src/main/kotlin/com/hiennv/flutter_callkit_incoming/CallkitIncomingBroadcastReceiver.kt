@@ -24,6 +24,7 @@ import android.util.Log
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
+        private var callInvite: VoiceInvite? = null
         var sessionId: String? = null
         var token: String? = null
         const val ACTION_CALL_INCOMING =
@@ -132,6 +133,30 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         var apiKey = Data.fromBundle(data).extra["apiKey"]
         var remoteMessage = Data.fromBundle(data).extra["remoteMessage"] as String
         var token = Data.fromBundle(data).extra["token"] as String
+
+                        client?.createSession(token) { err, sessionId ->
+                            run {
+                                Log.v("Zapme loginUser", "ZAPME REJECT: callback start >>>>>>>>>>>>>")
+                                when {
+                                    err != null -> {
+                                        Log.v("Zapme loginUser", "ZAPME REJECT: cant create token: $err")
+                                    } 
+                                    else -> {
+                                        Log.v("Zapme loginUser", "ZAPME REJECT: success loginuser")
+                                    
+                                        client?.setCallInviteListener { _, invite ->
+                                            run {
+                                                callInvite = invite
+                                                Log.v("Zapme", "ZAPME REJECT:  Invite $invite")
+                                                Log.v("Zapme", "ZAPME REJECT:  callInvite $callInvite")
+                                                Log.v("Zapme", "ZAPME REJECT: CALL NOTIFYING")
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
 
         when (action) {
             ACTION_CALL_INCOMING -> {
@@ -266,76 +291,25 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         })
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
-
-                        client?.createSession(token) { err, sessionId ->
-                            run {
-                                Log.v("Zapme loginUser", "callback start >>>>>>>>>>>>>")
-                                when {
-                                    err != null -> {
-                                        Log.v("Zapme loginUser", "cant create token: $err")
-                                    } 
-                                    else -> {
-                                        Log.v("Zapme loginUser", "success loginuser")
-                                    
-                                    client?.setCallInviteListener { _, invite ->
-                                        run {
-                                            callInvite = invite
-                                            Log.v("Zapme", "CALL NOTIFYING Invite $invite")
-                                            Log.v("Zapme", "CALL NOTIFYING callInvite $callInvite")
-                                            Log.v("Zapme", "CALL NOTIFYING")
-                                            if (callInvite != null) {
-                                                callInvite?.reject {
-                                                    err ->
-                                                    when {
-                                                        err != null -> {
-                                                            println("CALL NOTIFYING Zapme error reject call $err")
-
-                                                        }
-                                                        else -> {
-                                                            println("CALL NOTIFYING Zapme success reject")
-
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                Log.v("Zapme", "CALL NOTIFYING zapme callInvite null $callInvite")
-                                            }
-                                        }
-                                    }
-
-                                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
-                                        println("token $token")
-                                        
-                                        try {
-                                            callInvite = client?.processPushCallInvite(remoteMessage, token)
-                                            Log.v("Zapme", "processPushCallInvite called successfully")
-                                        } catch (error: Exception) {
-                                            error.printStackTrace()
-                                            Log.v("Zapme", "processPushCallInvite error $error")
-                                        }
+                        Log.v("Zapme","ZAPME REJECT: Zapme remote message ${remoteMessage}")
+                        println("ZAPME REJECT: token $token")
                                                 
-                                        Log.v("Zapme", "zapme client $client")
-                                        Log.v("Zapme", "zapme callInvite $callInvite")
-                                        if (callInvite != null) {
-                                            callInvite?.reject {
-                                                err ->
-                                                when {
-                                                    err != null -> {
-                                                        println("Zapme error reject call $err")
-
-                                                    }
-                                                    else -> {
-                                                        println("Zapme success reject")
-
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Log.v("Zapme", "zapme callInvite null $callInvite")
+                        Log.v("Zapme", "ZAPME REJECT: zapme client $client")
+                        Log.v("Zapme", "ZAPME REJECT: zapme callInvite $callInvite")
+                        if (callInvite != null) {
+                            callInvite?.reject {
+                                err ->
+                                    when {
+                                        err != null -> {
+                                            println("ZAPME REJECT: Zapme error reject call $err")
                                         }
+                                    else -> {
+                                        println("ZAPME REJECT: Zapme success reject")
                                     }
                                 }
                             }
+                        } else {
+                            Log.v("Zapme", "ZAPME REJECT: zapme callInvite null $callInvite")
                         }
 
                     }
