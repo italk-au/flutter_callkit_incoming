@@ -205,31 +205,13 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val callType = Data.fromBundle(data).extra["callType"]
 
                     if (callType == "phonetoapp") {
-                        //val appDirectory = context.filesDir
-                        //val file = File(appDirectory, "notifcheckeraccept.txt")
+                         Log.v("FC_INCOMING", "ACTION_CALL_ACCEPT Entry >>>>>>>>>>>>>")
+                        val appDirectory = context.getFilesDir()
+                        Log.v("FC_INCOMING", "appDirectory Entry >>>>>>>>>>>>>  ${appDirectory} ")
+                        val file = File(appDirectory, "notifcheckeraccept.txt")
                         //file.writeText("notifcheckeraccept")
+                        Log.v("FC_INCOMING", "create file  >>>>>>>>>>>>>  ${file} ")
 
-                        Log.v("FC_INCOMING", "ACTION_CALL_ACCEPT Entry >>>>>>>>>>>>>")
-
-                        final supportDirectory = await getApplicationSupportDirectory();
-
-                        final supportPath = supportDirectory.path;
-
-                        final newFile = File('$supportPath/notifcheckeraccept.txt');
-
-                        if (!newFile.exists()) {
-                            val fileCreated = newFile.createNewFile()
-                            if (fileCreated) {
-                                println("File created successfully.")
-                                Log.v("FC_INCOMING", "File created successfully. >>>>>>>>>>>>>")
-                            } else {
-                                println("Failed to create the file.")
-                                Log.v("FC_INCOMING", "Failed to create the file. >>>>>>>>>>>>>")
-                            }
-                        } else {
-                            println("File already exists.")
-                            Log.v("FC_INCOMING", "File already exists >>>>>>>>>>>>>")
-                        }
                     }
 
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
