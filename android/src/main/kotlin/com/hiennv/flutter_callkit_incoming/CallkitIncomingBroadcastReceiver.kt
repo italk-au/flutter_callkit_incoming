@@ -160,9 +160,12 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val callType = Data.fromBundle(data).extra["callType"]
 
                     if (callType == "voice") {
-                        val appDirectory = context.filesDir
+                        Log.v("FC_INCOMING", "ACTION_CALL_ACCEPT Entry >>>>>>>>>>>>>")
+                        val appDirectory = context.getFilesDir()
+                        Log.v("FC_INCOMING", "appDirectory Entry >>>>>>>>>>>>>  ${appDirectory} ")
                         val file = File(appDirectory, "notifcheckeraccept.txt")
-                        file.writeText("notifcheckeraccept")
+                        //file.writeText("notifcheckeraccept")
+                        Log.v("FC_INCOMING", "create file  >>>>>>>>>>>>>  ${file} ")
                     }
 
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
