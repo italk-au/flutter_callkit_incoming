@@ -14,7 +14,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
 import java.io.File
-import android.util.Log
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
@@ -160,7 +159,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
                     val callType = Data.fromBundle(data).extra["callType"]
 
-                    if (callType == "voice") {
+                    if (callType == "phonetoapp") {
                         Log.v("FC_INCOMING", "ACTION_CALL_ACCEPT Entry >>>>>>>>>>>>>")
                         val appDirectory = context.getFilesDir()
                         Log.v("FC_INCOMING", "appDirectory Entry >>>>>>>>>>>>>  ${appDirectory} ")
