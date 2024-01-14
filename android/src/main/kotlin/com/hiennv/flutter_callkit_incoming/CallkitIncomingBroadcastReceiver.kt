@@ -40,6 +40,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_CALL_CALLBACK =
                 "com.hiennv.flutter_callkit_incoming.ACTION_CALL_CALLBACK"
 
+        var callInvite: VoiceInvite? = null
+
 
         const val EXTRA_CALLKIT_INCOMING_DATA = "EXTRA_CALLKIT_INCOMING_DATA"
 
@@ -112,6 +114,37 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 }
     }
 
+        init {
+            Log.v("FC_INCOMING", "INIIIIT >>>>>>>>>>>>>")
+            var client = VoiceClient(context)
+            client?.setConfig(VGClientConfig())
+
+                        client?.createSession(token) { err, sessionId ->
+                            run {
+                                Log.v("FC_INCOMING", "callback start >>>>>>>>>>>>>")
+                                when {
+                                    err != null -> {
+                                        Log.v("FC_INCOMING", "cant create token: $err")
+                                    } 
+                                    else -> {
+                                        Log.v("FC_INCOMING", "success loginuser")
+                                    
+                                        client?.setCallInviteListener { _, invite ->
+                                            run {
+                                                callInvite = invite
+                                                Log.v("FC_INCOMING", "CALL NOTIFYING Invite $invite")
+                                                Log.v("FC_INCOMING", "CALL NOTIFYING callInvite $callInvite")
+                                                Log.v("FC_INCOMING", "CALL NOTIFYING")
+                                                
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+    }
+
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
@@ -121,7 +154,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         setDefaultLoggingLevel(LoggingLevel.Verbose)
         var client = VoiceClient(context)
         client?.setConfig(VGClientConfig())
-        var callInvite: VoiceInvite? = null
+        
         // val endcallStatus = intent.getExtras()?.containsKey("isfromEndAllCalls") 
         // if (endcallStatus != null && endcallStatus)    
         //     return
@@ -172,9 +205,31 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     val callType = Data.fromBundle(data).extra["callType"]
 
                     if (callType == "phonetoapp") {
-                        val appDirectory = context.filesDir
-                        val file = File(appDirectory, "notifcheckeraccept.txt")
-                        file.writeText("notifcheckeraccept")
+                        //val appDirectory = context.filesDir
+                        //val file = File(appDirectory, "notifcheckeraccept.txt")
+                        //file.writeText("notifcheckeraccept")
+
+                        Log.v("FC_INCOMING", "ACTION_CALL_ACCEPT Entry >>>>>>>>>>>>>")
+
+                        final supportDirectory = await getApplicationSupportDirectory();
+
+                        final supportPath = supportDirectory.path;
+
+                        final newFile = File('$supportPath/notifcheckeraccept.txt');
+
+                        if (!newFile.exists()) {
+                            val fileCreated = newFile.createNewFile()
+                            if (fileCreated) {
+                                println("File created successfully.")
+                                Log.v("FC_INCOMING", "File created successfully. >>>>>>>>>>>>>")
+                            } else {
+                                println("Failed to create the file.")
+                                Log.v("FC_INCOMING", "Failed to create the file. >>>>>>>>>>>>>")
+                            }
+                        } else {
+                            println("File already exists.")
+                            Log.v("FC_INCOMING", "File already exists >>>>>>>>>>>>>")
+                        }
                     }
 
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
@@ -267,43 +322,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
 
-                        client?.createSession(token) { err, sessionId ->
-                            run {
-                                Log.v("Zapme loginUser", "callback start >>>>>>>>>>>>>")
-                                when {
-                                    err != null -> {
-                                        Log.v("Zapme loginUser", "cant create token: $err")
-                                    } 
-                                    else -> {
-                                        Log.v("Zapme loginUser", "success loginuser")
-                                    
-                                    client?.setCallInviteListener { _, invite ->
-                                        run {
-                                            callInvite = invite
-                                            Log.v("Zapme", "CALL NOTIFYING Invite $invite")
-                                            Log.v("Zapme", "CALL NOTIFYING callInvite $callInvite")
-                                            Log.v("Zapme", "CALL NOTIFYING")
-                                            if (callInvite != null) {
-                                                callInvite?.reject {
-                                                    err ->
-                                                    when {
-                                                        err != null -> {
-                                                            println("CALL NOTIFYING Zapme error reject call $err")
-
-                                                        }
-                                                        else -> {
-                                                            println("CALL NOTIFYING Zapme success reject")
-
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                Log.v("Zapme", "CALL NOTIFYING zapme callInvite null $callInvite")
-                                            }
-                                        }
-                                    }
-
-                                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
+                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
                                         println("token $token")
                                         
                                         try {
@@ -333,10 +352,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                                         } else {
                                             Log.v("Zapme", "zapme callInvite null $callInvite")
                                         }
-                                    }
-                                }
-                            }
-                        }
 
                     }
                     else {
