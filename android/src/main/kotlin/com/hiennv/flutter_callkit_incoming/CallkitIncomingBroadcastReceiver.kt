@@ -167,12 +167,12 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         val file = File(appDirectory, "notifcheckeraccept.txt")
                         //file.writeText("notifcheckeraccept")
                         Log.v("FC_INCOMING", "create file  >>>>>>>>>>>>>  ${file} ")
+                        if (file.createNewFile()) {
+                                Log.v("FC_INCOMING", "File created: ${file.name}")
+                            } else {
+                                Log.v("FC_INCOMING", "File Already Exists")
+                            }
                         
-                        val appDirectoryExt = context.getExternalFilesDir()
-                        Log.v("FC_INCOMING", "appDirectoryExt Entry >>>>>>>>>>>>>  ${appDirectoryExt} ")
-                        val fileExt = File(appDirectoryExt, "notifcheckeraccept.txt")
-                        //file.writeText("notifcheckeraccept")
-                        Log.v("FC_INCOMING", "create fileExt  >>>>>>>>>>>>>  ${fileExt} ")
                     }
 
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
