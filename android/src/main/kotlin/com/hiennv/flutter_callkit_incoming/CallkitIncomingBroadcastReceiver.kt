@@ -40,9 +40,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_CALL_CALLBACK =
                 "com.hiennv.flutter_callkit_incoming.ACTION_CALL_CALLBACK"
 
-        var callInvite: VoiceInvite? = null
-
-
         const val EXTRA_CALLKIT_INCOMING_DATA = "EXTRA_CALLKIT_INCOMING_DATA"
 
         const val EXTRA_CALLKIT_ID = "EXTRA_CALLKIT_ID"
@@ -114,13 +111,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 }
     }
 
-        init {
-            Log.v("FC_INCOMING", "INIIIIT >>>>>>>>>>>>>")
-        
-      
-    }
-
-
+    
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         val callkitNotificationManager = CallkitNotificationManager(context)
@@ -278,38 +269,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         })
                     } else if (callType == "phonetoapp") {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
-
-                        Log.v("Zapme","Zapme remote message ${remoteMessage}")
-                                        println("token $token")
-                                        
-                                        try {
-                                            callInvite = client?.processPushCallInvite(remoteMessage, token)
-                                            Log.v("Zapme", "processPushCallInvite called successfully")
-                                        } catch (error: Exception) {
-                                            error.printStackTrace()
-                                            Log.v("Zapme", "processPushCallInvite error $error")
-                                        }
-                                                
-                                        Log.v("Zapme", "zapme client $client")
-                                        Log.v("Zapme", "zapme callInvite $callInvite")
-                                        if (callInvite != null) {
-                                            callInvite?.reject {
-                                                err ->
-                                                when {
-                                                    err != null -> {
-                                                        println("Zapme error reject call $err")
-
-                                                    }
-                                                    else -> {
-                                                        println("Zapme success reject")
-
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Log.v("Zapme", "zapme callInvite null $callInvite")
-                                        }
-
                     }
                     else {
                         sendEventFlutter(ACTION_CALL_DECLINE, data)
