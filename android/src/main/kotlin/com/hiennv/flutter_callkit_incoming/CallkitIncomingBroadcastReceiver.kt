@@ -116,33 +116,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
         init {
             Log.v("FC_INCOMING", "INIIIIT >>>>>>>>>>>>>")
-            var client = VoiceClient(context)
-            client?.setConfig(VGClientConfig())
-
-                        client?.createSession(token) { err, sessionId ->
-                            run {
-                                Log.v("FC_INCOMING", "callback start >>>>>>>>>>>>>")
-                                when {
-                                    err != null -> {
-                                        Log.v("FC_INCOMING", "cant create token: $err")
-                                    } 
-                                    else -> {
-                                        Log.v("FC_INCOMING", "success loginuser")
-                                    
-                                        client?.setCallInviteListener { _, invite ->
-                                            run {
-                                                callInvite = invite
-                                                Log.v("FC_INCOMING", "CALL NOTIFYING Invite $invite")
-                                                Log.v("FC_INCOMING", "CALL NOTIFYING callInvite $callInvite")
-                                                Log.v("FC_INCOMING", "CALL NOTIFYING")
-                                                
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
+        
+      
     }
 
 
