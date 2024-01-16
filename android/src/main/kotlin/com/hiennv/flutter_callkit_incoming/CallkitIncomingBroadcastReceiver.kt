@@ -23,6 +23,12 @@ import android.util.Log
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        activity = activityPluginBinding.getActivity()
+        Log.v("Zapme","ZAPME REJECT: INIT onAttachedToActivity")
+    }
+
     companion object {
         private var callInvite: VoiceInvite? = null
         var sessionId: String? = null
@@ -112,7 +118,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     putExtra(EXTRA_CALLKIT_INCOMING_DATA, data)
                 }
     }
-
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
