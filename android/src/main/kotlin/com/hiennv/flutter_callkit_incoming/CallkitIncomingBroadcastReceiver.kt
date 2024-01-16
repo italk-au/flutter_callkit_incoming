@@ -25,7 +25,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
-        activity = activityPluginBinding.getActivity()
+        // activity = activityPluginBinding.getActivity()
         Log.v("Zapme","ZAPME REJECT: INIT onAttachedToActivity")
     }
 
